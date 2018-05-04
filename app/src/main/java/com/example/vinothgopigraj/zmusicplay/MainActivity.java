@@ -35,8 +35,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         listView = (ListView)findViewById(R.id.listView);
-        //File f = new File("/storage/emulated/sdcard1");
-        File f=Environment.getExternalStorageDirectory();
+        File f = new File("/sdcard/");
+        //File f=Environment.getExternalStorageDirectory();
 
         System.out.println(f.getAbsolutePath());
         //String path = f.getPath()+"/storage/sdcard1";
