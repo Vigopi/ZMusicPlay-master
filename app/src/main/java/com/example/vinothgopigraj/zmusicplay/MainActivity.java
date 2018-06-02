@@ -35,10 +35,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         listView = (ListView)findViewById(R.id.listView);
-        File f = new File("/sdcard/");
+
+        mySongs = new ArrayList<>();
+        songs = new ArrayList<>();
+
+       // File f = new File("/sdcard/");
         //File f=Environment.getExternalStorageDirectory();
 
-        System.out.println(f.getAbsolutePath());
+       // System.out.println(f.getAbsolutePath());
         //String path = f.getPath()+"/storage/sdcard1";
         //File file = new File(path);
        // Toast.makeText(getApplicationContext(), path, Toast.LENGTH_LONG).show();
@@ -46,13 +50,13 @@ public class MainActivity extends AppCompatActivity {
 
        // f= new File(Environment.getRootDirectory().getParent());
         //Toast.makeText(getApplicationContext(), f.getName(), Toast.LENGTH_SHORT).show();
-        mySongs = findsongs(f);
-        items = new String[mySongs.size()];
-        for (int i = 0; i < mySongs.size(); i++) {
-            items[i] = mySongs.get(i).getName().toString();
-        }
+       // mySongs = findsongs(f);
+       // items = new String[mySongs.size()];
+      //  for (int i = 0; i < mySongs.size(); i++) {
+       //     items[i] = mySongs.get(i).getName().toString();
+       // }
         getMusic();
-        ArrayAdapter<String> adp = new ArrayAdapter<String>(getApplicationContext(),R.layout.song_layout,R.id.textView,items);
+        ArrayAdapter<String> adp = new ArrayAdapter<String>(getApplicationContext(),R.layout.song_layout,R.id.textView,songs);
         listView.setAdapter(adp);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -99,14 +103,20 @@ public class MainActivity extends AppCompatActivity {
         if(songcursor!=null && songcursor.moveToFirst())
         {
             do {
-                int songtitle = songcursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
-                String song = songcursor.getString(songtitle);
+                int audioIndex = songcursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
+                int audioDataIndex = songcursor.getColumnIndex(MediaStore.Audio.Media.DATA);
+                String song = songcursor.getString(audioIndex);
+                int fileColumn = songcursor.getColumnIndex (MediaStore.Audio.Media.DATA);
+                int mimeTypeColumn = songcursor.getColumnIndex(MediaStore.Audio.Media.MIME_TYPE);
+                String audioFilePath = songcursor.getString(fileColumn);
+                String mimeType = songcursor.getString(mimeTypeColumn);
 
+                File newFile = new File(audioFilePath);
+                mySongs.add(newFile);
                 songs.add(song);
             }
             while(songcursor.moveToNext());
-
-
+            songcursor.close();
         }
     }
 }
